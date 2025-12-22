@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superset Embedded Dashboard</title>
+    <script src="https://unpkg.com/@superset-ui/embedded-sdk"></script>
+    <style>
+        /* CSS để full màn hình */
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; }
+        
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #my-dashboard {
+            flex: 1; /* Chiếm toàn bộ không gian còn lại */
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .error-message { color: red; padding: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="my-dashboard">
+            <p>Đang kết nối tới Server để lấy Token...</p>
+        </div>
+    </div>
+
+    <script>
+        // --- CẤU HÌNH ---
+        const SUPERSET_DOMAIN = "http://103.102.131.30:8088";
+        const DASHBOARD_ID = "16d97d1c-7ee9-4d86-837b-4febdc6fc644";
+        
+        // Hàm gọi về Server Node.js của bạn để lấy Token
+        async function fetchTokenFromBackend() {
+            // Gọi vào đường dẫn tương đối (Relative path) vì HTML này được serve bởi chính server Node.js
+            const response = await fetch('http://localhost:3000/guest-token');
+            
+            if (!response.ok) {
+                throw new Error(`Lỗi Server: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log("--> Đã nhận Token từ backend:", data.token); // Debug log
+            return data.token;
+        }
+
+        async function embed() {
+            try {
+                await supersetEmbeddedSdk.embedDashboard({
+                    id: DASHBOARD_ID,
+                    supersetDomain: SUPERSET_DOMAIN,
+                    mountPoint: document.getElementById("my-dashboard"),
+                    
+                    fetchGuestToken: fetchTokenFromBackend,
+                    
+                    dashboardUiConfig: { 
+                        hideTitle: true,
+                        hideChartControls: true,
+                        hideTab: true,
+                        filters: {
+                            expanded: false
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error("Lỗi nhúng Dashboard:", error);
+                document.getElementById("my-dashboard").innerHTML = 
+                    `<div class="error-message">
+                        <h3>Không tải được biểu đồ :(</h3>
+                        <p>Chi tiết lỗi: ${error.message}</p>
+                        <p>Hãy kiểm tra Console (F12) để xem chi tiết.</p>
+                    </div>`;
+            }
+        }
+
+        // Bắt đầu chạy
+        embed();
+    </script>
+</body>
+</html>
