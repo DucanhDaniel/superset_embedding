@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superset Embedded Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@superset-ui/embedded-sdk"></script>
     <style>
         body,
@@ -13,7 +16,20 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            font-family: sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc;
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.25rem;
+            margin: 24px 0;
+            text-transform: capitalize;
+            letter-spacing: -0.05em;
+            font-weight: 800;
         }
 
         .container {
@@ -40,9 +56,13 @@
         }
 
         .error-message {
-            color: red;
+            color: #e53e3e;
             padding: 20px;
             text-align: center;
+            background: #fff5f5;
+            border-radius: 8px;
+            margin: 20px;
+            border: 1px solid #feb2b2;
         }
     </style>
 </head>
@@ -50,14 +70,15 @@
 <body>
 
     <div class="container">
+        <h1>dashboard superset</h1>
         <div id="my-dashboard">
             <p>Đang kết nối tới Server để lấy Token...</p>
         </div>
     </div>
 
     <script>
-        const SUPERSET_DOMAIN = "https://103.129.188.121";
-        const DASHBOARD_ID = "ad46dc13-c9d6-4cf4-9ba9-17ba2e1b8bf2";
+        const SUPERSET_DOMAIN = "http://165.99.16.68:8088";
+        const DASHBOARD_ID = "c9eeb1a6-1838-48fd-b955-639ce200dc16";
 
         async function fetchTokenFromBackend() {
             const response = await fetch('http://localhost:3010/guest-token');
