@@ -12,8 +12,11 @@
     "@superset-ui/embedded-sdk": "^0.3.0",
     "axios": "^1.13.2",
     "axios-cookiejar-support": "^6.0.5",
+    "axios-retry": "^4.5.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "md-to-pdf": "^5.2.5",
     "tough-cookie": "^6.0.0"
   }
 }
